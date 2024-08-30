@@ -2,61 +2,78 @@
 <html>
 
 <head>
-    <title>Weather Forecast Station</title>
+    <title>Weather Monitoring Center</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
-            background-color: lightblue;
-            font-family: Arial, sans-serif;
+            background-color: rgb(34, 34, 51);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .card {
-            background-color: #f5f5f5;
-            border-color: #ddd;
+            background-color: #232B2B;
+            border-color: #444;
         }
 
         .card-title {
-            color: #333;
+            color: #e3f2fd;
         }
 
         .lead {
-            color: #333;
+            color: #e3f2fd;
         }
 
         .chart-container {
             height: 300px;
         }
-    </style>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        @keyframes colorChange {
+        @keyframes uniqueAnimation {
             0% {
-                color: red;
+                color: #4CAF50;
+                text-shadow: 0 0 10px #4CAF50;
+                transform: scale(1);
+            }
+
+            25% {
+                color: #FFC107;
+                text-shadow: 0 0 20px #FFC107;
+                transform: scale(1.1);
             }
 
             50% {
-                color: white;
+                color: #FF5722;
+                text-shadow: 0 0 15px #FF5722;
+                transform: scale(1);
+            }
+
+            75% {
+                color: #2196F3;
+                text-shadow: 0 0 25px #2196F3;
+                transform: scale(1.1);
             }
 
             100% {
-                color: red;
+                color: #4CAF50;
+                text-shadow: 0 0 10px #4CAF50;
+                transform: scale(1);
             }
         }
 
         h1 {
-            animation: colorChange 2s infinite;
+            animation: uniqueAnimation 4s infinite;
         }
     </style>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
     <div class="container mt-5">
-        <h1 class="text-center">WEATHER FORECAST STATION</h1>
+        <h1 class="text-center">WEATHER MONITORING CENTER</h1>
 
         <div class="row">
             <div class="col-md-6">
@@ -102,7 +119,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        // Function to update date and time
         function updateDateTime() {
             var now = new Date();
             var datetimeStr = now.toLocaleString();
@@ -110,16 +126,15 @@
         }
         setInterval(updateDateTime, 1000);
 
-        // Initialize temperature chart
         var temperatureCtx = document.getElementById('temperatureChart').getContext('2d');
         var temperatureChart = new Chart(temperatureCtx, {
             type: 'line',
             data: {
-                labels: [], // Time labels
+                labels: [],
                 datasets: [{
                     label: 'Temperature (°C)',
                     data: [],
-                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderColor: 'rgba(0, 255, 0, 1)',
                     borderWidth: 2,
                     fill: false
                 }]
@@ -146,12 +161,11 @@
             }
         });
 
-        // Initialize humidity chart
         var humidityCtx = document.getElementById('humidityChart').getContext('2d');
         var humidityChart = new Chart(humidityCtx, {
             type: 'line',
             data: {
-                labels: [], // Time labels
+                labels: [],
                 datasets: [{
                     label: 'Humidity (%)',
                     data: [],
@@ -182,10 +196,9 @@
             }
         });
 
-        // Function to fetch data from the server
         function fetchData() {
             $.ajax({
-                url: '/temperatures/',  // Ensure this URL matches the one in urls.py
+                url: '/temperatures/',
                 method: 'GET',
                 success: function (response) {
                     console.log("Data received:", response);
@@ -194,8 +207,7 @@
                     var temperatureData = [];
                     var humidityData = [];
 
-                    // Get the latest 20 or 30 data points
-                    var latestData = response.slice(-30); // Adjust this number to show last 20 or 30 data points
+                    var latestData = response.slice(-30);
 
                     latestData.forEach(function (dataPoint) {
                         labels.push(dataPoint.timestamp);
@@ -203,18 +215,15 @@
                         humidityData.push(dataPoint.humidity);
                     });
 
-                    // Update the temperature chart
                     temperatureChart.data.labels = labels;
                     temperatureChart.data.datasets[0].data = temperatureData;
                     temperatureChart.update();
 
-                    // Update the humidity chart
                     humidityChart.data.labels = labels;
                     humidityChart.data.datasets[0].data = humidityData;
                     humidityChart.update();
 
-                    // Update the temperature and humidity values with the latest data point
-                    var latestTemperature = latestData[latestData.lAength - 1].temperature;
+                    var latestTemperature = latestData[latestData.length - 1].temperature;
                     var latestHumidity = latestData[latestData.length - 1].humidity;
 
                     document.getElementById('temperatureValue').innerText = latestTemperature !== null ? latestTemperature + ' °C' : '-- °C';
@@ -226,7 +235,6 @@
             });
         }
 
-        // Fetch data every 5 seconds
         setInterval(fetchData, 5000);
     </script>
 </body>
